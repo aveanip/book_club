@@ -1,4 +1,4 @@
-package registration;
+package models.registration;
 
 import java.util.List;
 

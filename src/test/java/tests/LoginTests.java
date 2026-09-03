@@ -1,40 +1,26 @@
 package tests;
 
-import login.LoginBobyModel;
-import login.LoginResponseModel;
-import login.WrongCredentialsLoginResponseModel;
+import models.login.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import static specs.BaseSpec.baseRequestSpec;
+import static specs.login.LoginSpec.*;
 
-public class LoginTests extends TestBase{
-
-String username = "user123";
-String password = "User12345";
-String wrongPassword = "User1234";
-
+public class LoginTests extends TestBase {
     @Test
     @DisplayName("Успешная авторизация с валидными данными")
-    public void successfulLoginTest(){
-        LoginBobyModel loginData = new LoginBobyModel(username, password);
+    public void successfulLoginTest() {
+        LoginBobyModel loginData = new LoginBobyModel(TestData.username, TestData.password);
         LoginResponseModel loginResponse =
-        given()
-                .log().all()
-                .contentType(JSON)
-                .body(loginData)
-                .basePath("/api/v1")
-                .when()
-                .post("/auth/token/")
-                .then()
-                .log().all()
-                .statusCode(201)
-                .body(matchesJsonSchemaInClasspath("schemas.registration/registration_schema.json"))
-                .extract().as(LoginResponseModel.class);
+                given(baseRequestSpec)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(successfulLoginRequestSpec)
+                        .extract().as(LoginResponseModel.class);
 
         String expectedTokenPath = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
         String actualRefresh = loginResponse.refresh();
@@ -44,28 +30,117 @@ String wrongPassword = "User1234";
         assertThat(actualAccess).startsWith(expectedTokenPath);
         assertThat(actualRefresh).isNotEqualTo(actualAccess);
     }
+
     @Test
-    @DisplayName("")
+    @DisplayName("Вход с невалидным password")
     public void wrongCredentialsLoginTest() {
-        LoginBobyModel loginData = new LoginBobyModel(username, wrongPassword);
+        LoginBobyModel loginData = new LoginBobyModel(TestData.username, TestData.wrongPassword);
         String expectedDetailError = "Invalid username or password.";
 
         WrongCredentialsLoginResponseModel loginResponse =
-                given()
-                        .log().all()
-                        .contentType(JSON)
+                given(baseRequestSpec)
                         .body(loginData)
-                        .basePath("/api/v1")
                         .when()
                         .post("/auth/token/")
                         .then()
-                        .log().all()
-                        .statusCode(401)
-                        .body(matchesJsonSchemaInClasspath("schemas/login/wrong_credentials_login_response_schema.json"))
-                        .body("detail", notNullValue())
+                        .spec(wrongCredentialsLoginRequestSpec)
                         .extract().as(WrongCredentialsLoginResponseModel.class);
 
         String actualDetailError = loginResponse.detail();
         assertThat(actualDetailError).isEqualTo(expectedDetailError);
     }
+
+    @Test
+    @DisplayName("Вход в систему с невалидным usernama")
+    public void invalidPasswordLogin() {
+        LoginBobyModel loginData = new LoginBobyModel(TestData.wrongUsername, TestData.password);
+        String expectedDetailError = "Invalid username or password.";
+        WrongCredentialsLoginResponseModel wrongCredentialsLoginResponse =
+                given(baseRequestSpec)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(invalidUsernameLoginRequestSpec)
+                        .extract().as(WrongCredentialsLoginResponseModel.class);
+
+        String actualDetailError = wrongCredentialsLoginResponse.detail();
+        assertThat(actualDetailError).isEqualTo(expectedDetailError);
     }
+
+    @Test
+    @DisplayName("Вход в систему с пустыми полями username и password")
+    public void emptyCredentialsLogin() {
+        LoginBobyModel loginData = new LoginBobyModel("", "");
+        EmptyCredentialsLoginResponseModel emptyCredentialsLoginResponse =
+                given(baseRequestSpec)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(emptyCredentialsLoginRequestSpec)
+                        .extract().as(EmptyCredentialsLoginResponseModel.class);
+
+        String expectedUsernameError = "This field may not be blank.";
+        String expectedPasswordError = "This field may not be blank.";
+        String actualUsernameError = emptyCredentialsLoginResponse.username().get(0);
+        String actualPasswordError = emptyCredentialsLoginResponse.password().get(0);
+        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
+        assertThat(actualPasswordError).isEqualTo(expectedPasswordError);
+    }
+
+    @Test
+    @DisplayName("Вход в систему с пустым username")
+    public void emptyUsernameLogin() {
+        LoginBobyModel loginData = new LoginBobyModel("", TestData.password);
+        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =
+                given(baseRequestSpec)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(emptyUsernameLoginRequestSpec)
+                        .extract().as(EmptyUsernameLoginResponseModel.class);
+
+        String expectedUsernameError = "This field may not be blank.";
+        String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
+        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
+
+    }
+
+    @Test
+    @DisplayName("Вход в систему с пустым password")
+    public void emptyPasswordLogin() {
+        LoginBobyModel loginData = new LoginBobyModel(TestData.username, "");
+        EmptyPasswordLoginResponseModel emptyPasswordLoginResponse =
+                given(baseRequestSpec)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(emptyPasswordLoginRequestSpec)
+                        .extract().as(EmptyPasswordLoginResponseModel.class);
+
+        String expectedPasswordError = "This field may not be blank.";
+        String actualPasswordError = emptyPasswordLoginResponse.password().get(0);
+        assertThat(actualPasswordError).isEqualTo(expectedPasswordError);
+    }
+
+    @Test
+    @DisplayName("Вход в систему с невалидным username")
+    public void invalidUsernameLogin() {
+        LoginBobyModel loginData = new LoginBobyModel("", TestData.password);
+        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =
+                given(baseRequestSpec)
+                        .body(loginData)
+                        .when()
+                        .post("/auth/token/")
+                        .then()
+                        .spec(emptyUsernameLoginRequestSpec)
+                        .extract().as(EmptyUsernameLoginResponseModel.class);
+
+        String expectedUsernameError = "This field may not be blank.";
+        String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
+        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
+    }
+}
