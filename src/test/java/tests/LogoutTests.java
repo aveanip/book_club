@@ -6,6 +6,7 @@ import models.logout.SuccessfulLogoutResponseModel;
 import models.logout.WrongRefreshTokenModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
@@ -16,7 +17,7 @@ import static specs.logout.logoutSpec.wrongLogoutResponseSpec;
 public class LogoutTests extends TestBase {
 
     @Test
-    @DisplayName("Проверка успешного models.logout с использованием валидного refresh токена")
+    @DisplayName("Успешный logout по валидному refresh токену")
     public void successfulLogoutTest() {
         LoginBobyModel loginData = new LoginBobyModel(TestData.username, TestData.password);
         String refreshToken =
@@ -28,18 +29,17 @@ public class LogoutTests extends TestBase {
                         .spec(successfulLoginRequestSpec)
                         .extract().path("refresh");
 
-       LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
+        LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
         SuccessfulLogoutResponseModel successfulLogoutResponse =
-        given(baseRequestSpec)
-                .body(logoutData)
-                .when()
-                .post("/auth/models.logout/")
-                .then()
-                .spec(successfulLogoutResponseSpec)
-                .extract().as(SuccessfulLogoutResponseModel.class);
+                given(baseRequestSpec)
+                        .body(logoutData)
+                        .when()
+                        .post("/auth/logout/")
+                        .then()
+                        .spec(successfulLogoutResponseSpec)
+                        .extract().as(SuccessfulLogoutResponseModel.class);
 
-        assertThat(successfulLogoutResponse)
-                .as("Ответ не null").isNotNull();
+        assertThat(successfulLogoutResponse).isNotNull();
     }
 
     @Test
@@ -50,7 +50,7 @@ public class LogoutTests extends TestBase {
                 given(baseRequestSpec)
                         .body(logoutData)
                         .when()
-                        .post("/auth/models.logout/")
+                        .post("/auth/logout/")
                         .then()
                         .spec(wrongLogoutResponseSpec)
                         .extract().as(WrongRefreshTokenModel.class);

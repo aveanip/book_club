@@ -1,13 +1,16 @@
 package tests;
+
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import models.registration.*;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
 import static specs.registration.registrationSpec.*;
+import static tests.TestData.*;
 
 public class RegistrationTests extends TestBase {
     String username;
@@ -17,7 +20,7 @@ public class RegistrationTests extends TestBase {
     public void prepareTestData() {
         Faker faker = new Faker();
         username = faker.name().firstName();
-        password = faker.name().firstName()+faker.number().randomNumber(6, false);
+        password = faker.name().firstName() + faker.number().randomNumber(6, false);
     }
 
     @Test
@@ -64,7 +67,6 @@ public class RegistrationTests extends TestBase {
                         .spec(existingUserWrongRequestSpec)
                         .extract().as(ExistingUserResponseModel.class);
 
-        String expectedError = "A user with that username already exists.";
         String actualError = secondregistrationResponse.username().get(0);
         assertThat(actualError).isEqualTo(expectedError);
     }
@@ -82,9 +84,8 @@ public class RegistrationTests extends TestBase {
                         .spec(usernameWrongRequestSpec)
                         .extract().as(ExistingUserResponseModel.class);
 
-        String expectedError = "This field may not be blank.";
         String actualError = existingUserResponse.username().get(0);
-        assertThat(actualError).isEqualTo(expectedError);
+        assertThat(actualError).isEqualTo(expectedErrorFieldIsEmpty);
     }
 
 
@@ -101,9 +102,8 @@ public class RegistrationTests extends TestBase {
                         .spec(existingPasswordWrongRequestSpec)
                         .extract().as(EmptyPasswordResponseModel.class);
 
-        String expectedError = "This field may not be blank.";
         String actualError = emptyPasswordResponse.password().get(0);
-        assertThat(actualError).isEqualTo(expectedError);
+        assertThat(actualError).isEqualTo(expectedErrorFieldIsEmpty);
     }
 
     @Test
@@ -119,12 +119,10 @@ public class RegistrationTests extends TestBase {
                         .spec(emptyCredentialsRequestSpec)
                         .extract().as(EmptyCredentialsResponseModel.class);
 
-        String expectedUsernameError = "This field may not be blank.";
-        String expectedPasswordError = "This field may not be blank.";
         String actualUsernameError = emptyCredentialsResponse.username().get(0);
         String actualPasswordError = emptyCredentialsResponse.password().get(0);
-        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
-        assertThat(actualPasswordError).isEqualTo(expectedPasswordError);
+        assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
+        assertThat(actualPasswordError).isEqualTo(expectedErrorFieldIsEmpty);
     }
 }
 

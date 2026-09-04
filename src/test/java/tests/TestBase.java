@@ -10,24 +10,4 @@ public class TestBase {
         RestAssured.baseURI = "https://book-club.qa.guru";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

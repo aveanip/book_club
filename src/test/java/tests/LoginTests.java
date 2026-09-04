@@ -3,16 +3,19 @@ package tests;
 import models.login.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static specs.BaseSpec.baseRequestSpec;
 import static specs.login.LoginSpec.*;
+import static tests.TestData.*;
+
 
 public class LoginTests extends TestBase {
     @Test
     @DisplayName("Успешная авторизация с валидными данными")
     public void successfulLoginTest() {
-        LoginBobyModel loginData = new LoginBobyModel(TestData.username, TestData.password);
+        LoginBobyModel loginData = new LoginBobyModel(username, password);
         LoginResponseModel loginResponse =
                 given(baseRequestSpec)
                         .body(loginData)
@@ -22,7 +25,6 @@ public class LoginTests extends TestBase {
                         .spec(successfulLoginRequestSpec)
                         .extract().as(LoginResponseModel.class);
 
-        String expectedTokenPath = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
         String actualRefresh = loginResponse.refresh();
         String actualAccess = loginResponse.access();
 
@@ -34,7 +36,7 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Вход с невалидным password")
     public void wrongCredentialsLoginTest() {
-        LoginBobyModel loginData = new LoginBobyModel(TestData.username, TestData.wrongPassword);
+        LoginBobyModel loginData = new LoginBobyModel(username, wrongPassword);
         String expectedDetailError = "Invalid username or password.";
 
         WrongCredentialsLoginResponseModel loginResponse =
@@ -54,7 +56,6 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с невалидным usernama")
     public void invalidPasswordLogin() {
         LoginBobyModel loginData = new LoginBobyModel(TestData.wrongUsername, TestData.password);
-        String expectedDetailError = "Invalid username or password.";
         WrongCredentialsLoginResponseModel wrongCredentialsLoginResponse =
                 given(baseRequestSpec)
                         .body(loginData)
@@ -65,7 +66,7 @@ public class LoginTests extends TestBase {
                         .extract().as(WrongCredentialsLoginResponseModel.class);
 
         String actualDetailError = wrongCredentialsLoginResponse.detail();
-        assertThat(actualDetailError).isEqualTo(expectedDetailError);
+        assertThat(actualDetailError).isEqualTo(expectedDataError);
     }
 
     @Test
@@ -81,12 +82,10 @@ public class LoginTests extends TestBase {
                         .spec(emptyCredentialsLoginRequestSpec)
                         .extract().as(EmptyCredentialsLoginResponseModel.class);
 
-        String expectedUsernameError = "This field may not be blank.";
-        String expectedPasswordError = "This field may not be blank.";
         String actualUsernameError = emptyCredentialsLoginResponse.username().get(0);
         String actualPasswordError = emptyCredentialsLoginResponse.password().get(0);
-        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
-        assertThat(actualPasswordError).isEqualTo(expectedPasswordError);
+        assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
+        assertThat(actualPasswordError).isEqualTo(expectedErrorFieldIsEmpty);
     }
 
     @Test
@@ -102,16 +101,15 @@ public class LoginTests extends TestBase {
                         .spec(emptyUsernameLoginRequestSpec)
                         .extract().as(EmptyUsernameLoginResponseModel.class);
 
-        String expectedUsernameError = "This field may not be blank.";
         String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
-        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
+        assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
 
     }
 
     @Test
     @DisplayName("Вход в систему с пустым password")
     public void emptyPasswordLogin() {
-        LoginBobyModel loginData = new LoginBobyModel(TestData.username, "");
+        LoginBobyModel loginData = new LoginBobyModel(username, "");
         EmptyPasswordLoginResponseModel emptyPasswordLoginResponse =
                 given(baseRequestSpec)
                         .body(loginData)
@@ -121,9 +119,8 @@ public class LoginTests extends TestBase {
                         .spec(emptyPasswordLoginRequestSpec)
                         .extract().as(EmptyPasswordLoginResponseModel.class);
 
-        String expectedPasswordError = "This field may not be blank.";
         String actualPasswordError = emptyPasswordLoginResponse.password().get(0);
-        assertThat(actualPasswordError).isEqualTo(expectedPasswordError);
+        assertThat(actualPasswordError).isEqualTo(expectedErrorFieldIsEmpty);
     }
 
     @Test
@@ -139,8 +136,7 @@ public class LoginTests extends TestBase {
                         .spec(emptyUsernameLoginRequestSpec)
                         .extract().as(EmptyUsernameLoginResponseModel.class);
 
-        String expectedUsernameError = "This field may not be blank.";
         String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
-        assertThat(actualUsernameError).isEqualTo(expectedUsernameError);
+        assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
     }
 }
