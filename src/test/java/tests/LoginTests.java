@@ -53,7 +53,7 @@ public class LoginTests extends TestBase {
 
         step("Проверка сообщения об ошибке ", () -> {
             String actualDetailError = loginResponse.detail();
-            assertThat(actualDetailError).isEqualTo(expectedDetailError);
+            assertThat(actualDetailError).isEqualTo(expectedDataError);
         });
     }
 
