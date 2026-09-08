@@ -1,5 +1,6 @@
 package tests;
 
+import Api.UserApiClient;
 import com.github.javafaker.Faker;
 import models.registration.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,12 +9,11 @@ import org.junit.jupiter.api.Test;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.BaseSpec.baseRequestSpec;
-import static specs.registration.registrationSpec.*;
 import static tests.TestData.expectedError;
 import static tests.TestData.expectedErrorFieldIsEmpty;
 
 public class RegistrationTests extends TestBase {
+
     String username;
     String password;
 
@@ -28,16 +28,8 @@ public class RegistrationTests extends TestBase {
     @DisplayName("Успешная регистрация пользователя с валидными данными")
     public void successfulRegisteringTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
-        RegistrationResponseModel registrationResponse = step
-                ("Отправка запроса на регистрацию нового пользователя", () ->
-                        given(baseRequestSpec)
-                                .body(registrationData)
-                                .when()
-                                .post("/users/register/")
-                                .then()
-                                .spec(successfulRegistrationRequestSpec)
-                                .extract().as(RegistrationResponseModel.class)
-                );
+        RegistrationResponseModel registrationResponse =
+                userApiClient.successfulUserRegistration(registrationData);
         step("Валидация полей ответа после успешной регистрации", () -> {
             assertThat(registrationResponse.username()).isEqualTo(username);
             assertThat(registrationResponse.id()).isGreaterThan(0);
@@ -51,29 +43,13 @@ public class RegistrationTests extends TestBase {
     @DisplayName("Повторная регистрация с теми же данными возвращает статус 400 и сообщение об ошибке")
     public void existingUserWrongRegistrationTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
-        RegistrationResponseModel firstregistrationResponse = step
-                ("Первичная регистрация пользователя", () ->
-                        given(baseRequestSpec)
-                                .body(registrationData)
-                                .when()
-                                .post("/users/register/")
-                                .then()
-                                .spec(successfulRegistrationRequestSpec)
-                                .extract().as(RegistrationResponseModel.class)
-                );
+        RegistrationResponseModel firstregistrationResponse =
+                userApiClient.successfulUserRegistration(registrationData);
         step("Проверка первичной успешной регистрации", () -> {
             assertThat(firstregistrationResponse.username()).isEqualTo(username);
         });
-        ExistingUserResponseModel secondregistrationResponse = step
-                ("Повторная регистрация с теме же данными", () -> {
-                    return given(baseRequestSpec)
-                            .body(registrationData)
-                            .when()
-                            .post("/users/register/")
-                            .then()
-                            .spec(existingUserWrongRequestSpec)
-                            .extract().as(ExistingUserResponseModel.class);
-                });
+        ExistingUserResponseModel secondregistrationResponse =
+                userApiClient.secondregistrationResponse(registrationData);
         step("Валидация сообщения об ошибки при повторной регистрации", () -> {
             String actualError = secondregistrationResponse.username().get(0);
             assertThat(actualError).isEqualTo(expectedError);
@@ -84,16 +60,8 @@ public class RegistrationTests extends TestBase {
     @DisplayName("Регистрация без обязательного поля username")
     public void registrationWithoutUsername() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", password);
-        ExistingUserResponseModel existingUserResponse = step
-                ("Попытка регистрации с пустым username", () ->
-                given(baseRequestSpec)
-                        .body(registrationData)
-                        .when()
-                        .post("/users/register/")
-                        .then()
-                        .spec(usernameWrongRequestSpec)
-                        .extract().as(ExistingUserResponseModel.class)
-                );
+        ExistingUserResponseModel existingUserResponse =
+                userApiClient.registrationWithoutFieldUsername(registrationData);
         step ("Проверка сообщения об ошибке для поля username", () -> {
             String actualError = existingUserResponse.username().get(0);
             assertThat(actualError).isEqualTo(expectedErrorFieldIsEmpty);
@@ -105,16 +73,8 @@ public class RegistrationTests extends TestBase {
     @DisplayName("Регистрация без обязательного поля password")
     public void registrationWithoutPassword() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, "");
-        EmptyPasswordResponseModel emptyPasswordResponse =  step
-                ("Попытка регистрации с пустым password", () ->
-                given(baseRequestSpec)
-                        .body(registrationData)
-                        .when()
-                        .post("/users/register/")
-                        .then()
-                        .spec(existingPasswordWrongRequestSpec)
-                        .extract().as(EmptyPasswordResponseModel.class)
-                );
+        EmptyPasswordResponseModel emptyPasswordResponse =
+                userApiClient.registrationWithoutFieldPassword(registrationData);
 
         step ("Проверка сообщения об ошибке для поля password", () -> {
         String actualError = emptyPasswordResponse.password().get(0);
@@ -126,16 +86,8 @@ public class RegistrationTests extends TestBase {
     @DisplayName("Регистрация с пустыми обязательными полями username и password")
     public void registrationEmptyCredentials() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", "");
-        EmptyCredentialsResponseModel emptyCredentialsResponse = step
-                ("Попытка регистрации пользователя с пустыми полями username и password", () ->
-                given(baseRequestSpec)
-                        .body(registrationData)
-                        .when()
-                        .post("/users/register/")
-                        .then()
-                        .spec(emptyCredentialsRequestSpec)
-                        .extract().as(EmptyCredentialsResponseModel.class)
-                );
+        EmptyCredentialsResponseModel emptyCredentialsResponse =
+                userApiClient.emptyCredentialsUsernameAndPassword(registrationData);
 
         step("Проверка сообщений об ошибках пустых полей", () -> {
         String actualUsernameError = emptyCredentialsResponse.username().get(0);

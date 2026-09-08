@@ -1,31 +1,22 @@
 package tests;
 
+import Api.AuthApiClient;
 import models.login.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static specs.BaseSpec.baseRequestSpec;
-import static specs.login.LoginSpec.*;
 import static tests.TestData.*;
 
 
 public class LoginTests extends TestBase {
+
     @Test
     @DisplayName("Успешная авторизация с валидными данными")
     public void successfulLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(username, password);
-        LoginResponseModel loginResponse = step("Авторизация и получение токена", () ->
-                given(baseRequestSpec)
-                        .body(loginData)
-                        .when()
-                        .post("/auth/token/")
-                        .then()
-                        .spec(successfulLoginRequestSpec)
-                        .extract().as(LoginResponseModel.class)
-        );
+        LoginResponseModel loginResponse = authApiClient.login(loginData);
+
         step("Проверка Refresh и Access токенов", () -> {
             String actualRefresh = loginResponse.refresh();
             String actualAccess = loginResponse.access();
@@ -40,16 +31,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход с невалидным password")
     public void wrongCredentialsLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(username, wrongPassword);
-        WrongCredentialsLoginResponseModel loginResponse = step
-                ("Авторизация с невалидным полем Password ", () ->
-                        given(baseRequestSpec)
-                                .body(loginData)
-                                .when()
-                                .post("/auth/token/")
-                                .then()
-                                .spec(wrongCredentialsLoginRequestSpec)
-                                .extract().as(WrongCredentialsLoginResponseModel.class)
-                );
+        WrongCredentialsLoginResponseModel loginResponse = authApiClient.invalidCredentialsPassword(loginData);
 
         step("Проверка сообщения об ошибке ", () -> {
             String actualDetailError = loginResponse.detail();
@@ -61,16 +43,8 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с невалидным username")
     public void invalidPasswordLogin() {
         LoginBodyModel loginData = new LoginBodyModel(TestData.wrongUsername, TestData.password);
-        WrongCredentialsLoginResponseModel wrongCredentialsLoginResponse = step
-                ("Авторизаия с невалидным Username", () ->
-                        given(baseRequestSpec)
-                                .body(loginData)
-                                .when()
-                                .post("/auth/token/")
-                                .then()
-                                .spec(invalidUsernameLoginRequestSpec)
-                                .extract().as(WrongCredentialsLoginResponseModel.class)
-                );
+        WrongCredentialsLoginResponseModel wrongCredentialsLoginResponse =
+                authApiClient.wrongCredentialsUsername(loginData);
         step("Проверка сообщения об ошибке ", () -> {
             String actualDetailError = wrongCredentialsLoginResponse.detail();
             assertThat(actualDetailError).isEqualTo(expectedDataError);
@@ -81,16 +55,8 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с пустыми полями username и password")
     public void emptyCredentialsLogin() {
         LoginBodyModel loginData = new LoginBodyModel("", "");
-        EmptyCredentialsLoginResponseModel emptyCredentialsLoginResponse = step
-                ("Авторизация с пустыми полями Username  и Password", () ->
-                        given(baseRequestSpec)
-                                .body(loginData)
-                                .when()
-                                .post("/auth/token/")
-                                .then()
-                                .spec(emptyCredentialsLoginRequestSpec)
-                                .extract().as(EmptyCredentialsLoginResponseModel.class)
-                );
+        EmptyCredentialsLoginResponseModel emptyCredentialsLoginResponse =
+                authApiClient.emptyCredentialsLogin(loginData);
         step("Валидация сообщений об ошибках валидации", () -> {
             String actualUsernameError = emptyCredentialsLoginResponse.username().get(0);
             String actualPasswordError = emptyCredentialsLoginResponse.password().get(0);
@@ -103,16 +69,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с пустым username")
     public void emptyUsernameLogin() {
         LoginBodyModel loginData = new LoginBodyModel("", TestData.password);
-        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse = step
-                ("Авторизация с пустым полем Username", () ->
-                        given(baseRequestSpec)
-                                .body(loginData)
-                                .when()
-                                .post("/auth/token/")
-                                .then()
-                                .spec(emptyUsernameLoginRequestSpec)
-                                .extract().as(EmptyUsernameLoginResponseModel.class)
-                );
+        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse = authApiClient.emptyCredentialsUsername(loginData);
         step("Проверка ошибки пустого поля Username", () -> {
             String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
             assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
@@ -123,16 +80,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с пустым password")
     public void emptyPasswordLogin() {
         LoginBodyModel loginData = new LoginBodyModel(username, "");
-        EmptyPasswordLoginResponseModel emptyPasswordLoginResponse = step
-                ("Авторизация с пустым Password", () ->
-                        given(baseRequestSpec)
-                                .body(loginData)
-                                .when()
-                                .post("/auth/token/")
-                                .then()
-                                .spec(emptyPasswordLoginRequestSpec)
-                                .extract().as(EmptyPasswordLoginResponseModel.class)
-                );
+        EmptyPasswordLoginResponseModel emptyPasswordLoginResponse = authApiClient.emptyCredentialsPassword(loginData);
         step("Проверка ошибки пустого поля Password", () -> {
             String actualPasswordError = emptyPasswordLoginResponse.password().get(0);
             assertThat(actualPasswordError).isEqualTo(expectedErrorFieldIsEmpty);
@@ -142,17 +90,9 @@ public class LoginTests extends TestBase {
     @Test
     @DisplayName("Вход в систему с невалидным username")
     public void invalidUsernameLogin() {
-        LoginBodyModel loginData = new LoginBodyModel("", TestData.password);
-        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse = step
-                ("Попытка авторизации с невалидными данными", () ->
-                        given(baseRequestSpec)
-                                .body(loginData)
-                                .when()
-                                .post("/auth/token/")
-                                .then()
-                                .spec(emptyUsernameLoginRequestSpec)
-                                .extract().as(EmptyUsernameLoginResponseModel.class)
-                );
+        LoginBodyModel loginData = new LoginBodyModel(wrongUsername, password);
+        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =
+                authApiClient.invalidCredentialsUsername(loginData);
         step("Проверка сообщения об ошибке ", () -> {
             String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
             assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
