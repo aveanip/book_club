@@ -2,5 +2,5 @@ package Api;
 
 public class ApiClient {
         public final AuthApiClient auth = new AuthApiClient();
-        public final UserApiClient users = new UserApiClient();
+        public final UserApiClient user = new UserApiClient();
 }

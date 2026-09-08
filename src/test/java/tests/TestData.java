@@ -1,5 +1,6 @@
 package tests;
 
+import Api.ApiClient;
 import com.github.javafaker.Faker;
 
 public class TestData {

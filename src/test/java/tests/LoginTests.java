@@ -15,7 +15,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Успешная авторизация с валидными данными")
     public void successfulLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(username, password);
-        LoginResponseModel loginResponse = authApiClient.login(loginData);
+        LoginResponseModel loginResponse = api.auth.login(loginData);
 
         step("Проверка Refresh и Access токенов", () -> {
             String actualRefresh = loginResponse.refresh();
@@ -31,7 +31,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход с невалидным password")
     public void wrongCredentialsLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(username, wrongPassword);
-        WrongCredentialsLoginResponseModel loginResponse = authApiClient.invalidCredentialsPassword(loginData);
+        WrongCredentialsLoginResponseModel loginResponse =  api.auth.invalidCredentialsPassword(loginData);
 
         step("Проверка сообщения об ошибке ", () -> {
             String actualDetailError = loginResponse.detail();
@@ -44,7 +44,7 @@ public class LoginTests extends TestBase {
     public void invalidPasswordLogin() {
         LoginBodyModel loginData = new LoginBodyModel(TestData.wrongUsername, TestData.password);
         WrongCredentialsLoginResponseModel wrongCredentialsLoginResponse =
-                authApiClient.wrongCredentialsUsername(loginData);
+                api.auth.wrongCredentialsUsername(loginData);
         step("Проверка сообщения об ошибке ", () -> {
             String actualDetailError = wrongCredentialsLoginResponse.detail();
             assertThat(actualDetailError).isEqualTo(expectedDataError);
@@ -56,7 +56,7 @@ public class LoginTests extends TestBase {
     public void emptyCredentialsLogin() {
         LoginBodyModel loginData = new LoginBodyModel("", "");
         EmptyCredentialsLoginResponseModel emptyCredentialsLoginResponse =
-                authApiClient.emptyCredentialsLogin(loginData);
+                api.auth.emptyCredentialsLogin(loginData);
         step("Валидация сообщений об ошибках валидации", () -> {
             String actualUsernameError = emptyCredentialsLoginResponse.username().get(0);
             String actualPasswordError = emptyCredentialsLoginResponse.password().get(0);
@@ -69,7 +69,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с пустым username")
     public void emptyUsernameLogin() {
         LoginBodyModel loginData = new LoginBodyModel("", TestData.password);
-        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse = authApiClient.emptyCredentialsUsername(loginData);
+        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =  api.auth.emptyCredentialsUsername(loginData);
         step("Проверка ошибки пустого поля Username", () -> {
             String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
             assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
@@ -80,7 +80,7 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с пустым password")
     public void emptyPasswordLogin() {
         LoginBodyModel loginData = new LoginBodyModel(username, "");
-        EmptyPasswordLoginResponseModel emptyPasswordLoginResponse = authApiClient.emptyCredentialsPassword(loginData);
+        EmptyPasswordLoginResponseModel emptyPasswordLoginResponse =  api.auth.emptyCredentialsPassword(loginData);
         step("Проверка ошибки пустого поля Password", () -> {
             String actualPasswordError = emptyPasswordLoginResponse.password().get(0);
             assertThat(actualPasswordError).isEqualTo(expectedErrorFieldIsEmpty);
@@ -92,7 +92,7 @@ public class LoginTests extends TestBase {
     public void invalidUsernameLogin() {
         LoginBodyModel loginData = new LoginBodyModel(wrongUsername, password);
         EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =
-                authApiClient.invalidCredentialsUsername(loginData);
+                api.auth.invalidCredentialsUsername(loginData);
         step("Проверка сообщения об ошибке ", () -> {
             String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
             assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);

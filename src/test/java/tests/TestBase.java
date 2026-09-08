@@ -1,5 +1,6 @@
 package tests;
 
+import Api.ApiClient;
 import Api.AuthApiClient;
 import Api.UserApiClient;
 import io.restassured.RestAssured;
@@ -7,8 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 public class TestBase {
 
-    public final UserApiClient userApiClient = new UserApiClient();
-    public final AuthApiClient authApiClient = new AuthApiClient();
+    protected final ApiClient api = new ApiClient();
 
     @BeforeAll
     public static void setUp() {

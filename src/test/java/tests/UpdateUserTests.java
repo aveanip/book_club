@@ -41,7 +41,7 @@ public class UpdateUserTests extends TestBase {
     public void successfulUpdateUserTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username1, password1);
         RegistrationResponseModel registrationResponse =
-                userApiClient.successfulUserRegistration(registrationData);
+                api.user.successfulUserRegistration(registrationData);
         step("Проверка успешной регистрации", () -> {
             assertThat(registrationResponse.username()).isEqualTo(username1);
             assertThat(registrationResponse.id()).isGreaterThan(0);
@@ -50,12 +50,12 @@ public class UpdateUserTests extends TestBase {
         Integer userId = registrationResponse.id();
 
         LoginBodyModel loginData = new LoginBodyModel(username1, password1);
-        LoginResponseModel loginResponse = authApiClient.login(loginData);
+        LoginResponseModel loginResponse = api.auth.login(loginData);
 
         String accessToken = loginResponse.access();
         UpdateBodyModel updateUser = new UpdateBodyModel(newUsername,
                 newFirstName, newLastName, newEmail);
-        PutSuccessfullUpDateUserModel successfullUpDateUser = userApiClient.updateUserDataPut(accessToken, userId, updateUser);
+        PutSuccessfullUpDateUserModel successfullUpDateUser = api.user.updateUserDataPut(accessToken, userId, updateUser);
 
         step("Валидация обновленных данных пользователя", () -> {
             assertThat(successfullUpDateUser.id()).isEqualTo(userId);
@@ -71,7 +71,7 @@ public class UpdateUserTests extends TestBase {
     @DisplayName("PUT Обновление данных с пустым username")
     public void wrongUpdateUserTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username1, password1);
-        RegistrationResponseModel registrationResponse = userApiClient.successfulUserRegistration(registrationData);
+        RegistrationResponseModel registrationResponse = api.user.successfulUserRegistration(registrationData);
 
         step("Проверка успешной регистрации", () -> {
             assertThat(registrationResponse.id()).isGreaterThan(0);
@@ -80,13 +80,13 @@ public class UpdateUserTests extends TestBase {
 
         Integer userId = registrationResponse.id();
         LoginBodyModel loginData = new LoginBodyModel(username1, password1);
-        LoginResponseModel loginResponse = authApiClient.login(loginData);
+        LoginResponseModel loginResponse = api.auth.login(loginData);
 
         String accessToken = loginResponse.access();
         UpdateBodyModel updateUser = new UpdateBodyModel
                 ("", newFirstName, newLastName, newEmail);
         PutWrongUpDateUserModel wrongUpDateUserModel =
-                userApiClient.updateWithEmptyFieldUsername(accessToken, userId, updateUser);
+                api.user.updateWithEmptyFieldUsername(accessToken, userId, updateUser);
 
         step("Валидация сообщения об ошибке для поля username", () -> {
             String actualError = wrongUpDateUserModel.username().get(0);
@@ -99,7 +99,7 @@ public class UpdateUserTests extends TestBase {
     @DisplayName("Обновление всех полей через PATCH")
     public void patchSuccessfulUpdateUserTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username1, password1);
-        RegistrationResponseModel registrationResponse = userApiClient.successfulUserRegistration(registrationData);
+        RegistrationResponseModel registrationResponse = api.user.successfulUserRegistration(registrationData);
 
         step("Проверка успешной регистрации", () -> {
             assertThat(registrationResponse.username()).isEqualTo(username1);
@@ -108,13 +108,13 @@ public class UpdateUserTests extends TestBase {
 
         Integer userId = registrationResponse.id();
         LoginBodyModel loginData = new LoginBodyModel(username1, password1);
-        LoginResponseModel loginResponse = authApiClient.login(loginData);
+        LoginResponseModel loginResponse = api.auth.login(loginData);
 
         String accessToken = loginResponse.access();
         UpdateBodyModel updateUser = new UpdateBodyModel(newUsername,
                 newFirstName, newLastName, newEmail);
         PutSuccessfullUpDateUserModel successfullUpDateUser =
-                userApiClient.updateUserDataPatch(accessToken,userId,updateUser);
+                api.user.updateUserDataPatch(accessToken,userId,updateUser);
 
         step("Валидация обновленных данных пользователя", () -> {
             assertThat(successfullUpDateUser.id()).isEqualTo(userId);
@@ -130,7 +130,7 @@ public class UpdateUserTests extends TestBase {
     @DisplayName("Обновление поля невалидным email PATCH")
     public void patchInvalidEmailTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username1, password1);
-        RegistrationResponseModel registrationResponse =userApiClient.successfulUserRegistration(registrationData);
+        RegistrationResponseModel registrationResponse = api.user.successfulUserRegistration(registrationData);
 
         step("Проверка успешной регистрации", () -> {
             assertThat(registrationResponse.username()).isEqualTo(username1);
@@ -140,12 +140,12 @@ public class UpdateUserTests extends TestBase {
         Integer userId = registrationResponse.id();
 
         LoginBodyModel loginData = new LoginBodyModel(username1, password1);
-        LoginResponseModel loginResponse = authApiClient.login(loginData);
+        LoginResponseModel loginResponse = api.auth.login(loginData);
 
         String accessToken = loginResponse.access();
         UpdateBodyModel updateUser = new UpdateBodyModel(newUsername,
                 newFirstName, newLastName, invalidDataEmail);
-        PatchInvalidEmailModel invalidEmail = userApiClient.updateUserDataWithInvalidEmail(accessToken,userId,updateUser);
+        PatchInvalidEmailModel invalidEmail = api.user.updateUserDataWithInvalidEmail(accessToken,userId,updateUser);
 
         step("ПОбновление поля невалидным email через PATCH", () -> {
             String actualError = invalidEmail.email().get(0);

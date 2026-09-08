@@ -29,7 +29,7 @@ public class RegistrationTests extends TestBase {
     public void successfulRegisteringTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         RegistrationResponseModel registrationResponse =
-                userApiClient.successfulUserRegistration(registrationData);
+                api.user.successfulUserRegistration(registrationData);
         step("Валидация полей ответа после успешной регистрации", () -> {
             assertThat(registrationResponse.username()).isEqualTo(username);
             assertThat(registrationResponse.id()).isGreaterThan(0);
@@ -44,12 +44,12 @@ public class RegistrationTests extends TestBase {
     public void existingUserWrongRegistrationTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
         RegistrationResponseModel firstregistrationResponse =
-                userApiClient.successfulUserRegistration(registrationData);
+                api.user.successfulUserRegistration(registrationData);
         step("Проверка первичной успешной регистрации", () -> {
             assertThat(firstregistrationResponse.username()).isEqualTo(username);
         });
         ExistingUserResponseModel secondregistrationResponse =
-                userApiClient.secondregistrationResponse(registrationData);
+                api.user.secondregistrationResponse(registrationData);
         step("Валидация сообщения об ошибки при повторной регистрации", () -> {
             String actualError = secondregistrationResponse.username().get(0);
             assertThat(actualError).isEqualTo(expectedError);
@@ -61,7 +61,7 @@ public class RegistrationTests extends TestBase {
     public void registrationWithoutUsername() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", password);
         ExistingUserResponseModel existingUserResponse =
-                userApiClient.registrationWithoutFieldUsername(registrationData);
+                api.user.registrationWithoutFieldUsername(registrationData);
         step ("Проверка сообщения об ошибке для поля username", () -> {
             String actualError = existingUserResponse.username().get(0);
             assertThat(actualError).isEqualTo(expectedErrorFieldIsEmpty);
@@ -74,7 +74,7 @@ public class RegistrationTests extends TestBase {
     public void registrationWithoutPassword() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, "");
         EmptyPasswordResponseModel emptyPasswordResponse =
-                userApiClient.registrationWithoutFieldPassword(registrationData);
+                api.user.registrationWithoutFieldPassword(registrationData);
 
         step ("Проверка сообщения об ошибке для поля password", () -> {
         String actualError = emptyPasswordResponse.password().get(0);
@@ -87,7 +87,7 @@ public class RegistrationTests extends TestBase {
     public void registrationEmptyCredentials() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", "");
         EmptyCredentialsResponseModel emptyCredentialsResponse =
-                userApiClient.emptyCredentialsUsernameAndPassword(registrationData);
+                api.user.emptyCredentialsUsernameAndPassword(registrationData);
 
         step("Проверка сообщений об ошибках пустых полей", () -> {
         String actualUsernameError = emptyCredentialsResponse.username().get(0);

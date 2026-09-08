@@ -22,9 +22,9 @@ public class LogoutTests extends TestBase {
     @DisplayName("Успешный logout по валидному refresh токену")
     public void successfulLogoutTest() {
         LoginBodyModel loginData = new LoginBodyModel(TestData.username, TestData.password);
-        String refreshToken = authApiClient.loginAndGetRefreshToken(loginData);
+        String refreshToken =  api.auth.loginAndGetRefreshToken(loginData);
         LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
-        authApiClient.logout(logoutData);
+        api.auth.logout(logoutData);
 
         step("Проверка успешного logout", () -> {
             assertThat(logoutData).isNotNull();
@@ -35,7 +35,7 @@ public class LogoutTests extends TestBase {
     @DisplayName("Проверка невалидного токена")
     public void wrongRefreshTokenTest() {
         LogoutBodyModel logoutData = new LogoutBodyModel(TestData.invalidRefreshToken);
-        WrongRefreshTokenModel wrongRefreshToken = authApiClient.wrongRefreshToken(logoutData);
+        WrongRefreshTokenModel wrongRefreshToken =  api.auth.wrongRefreshToken(logoutData);
 
         step("Проверка сообщения об ошибке", () -> {
             String actualDetailError = wrongRefreshToken.detail();
