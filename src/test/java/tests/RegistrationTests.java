@@ -58,7 +58,7 @@ public class RegistrationTests extends TestBase {
 
     @Test
     @DisplayName("Регистрация без обязательного поля username")
-    public void registrationWithoutUsername() {
+    public void registrationWithoutUsernameTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", password);
         ExistingUserResponseModel existingUserResponse =
                 api.user.registrationWithoutFieldUsername(registrationData);
@@ -71,7 +71,7 @@ public class RegistrationTests extends TestBase {
 
     @Test
     @DisplayName("Регистрация без обязательного поля password")
-    public void registrationWithoutPassword() {
+    public void registrationWithoutPasswordTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, "");
         EmptyPasswordResponseModel emptyPasswordResponse =
                 api.user.registrationWithoutFieldPassword(registrationData);
@@ -84,7 +84,7 @@ public class RegistrationTests extends TestBase {
 
     @Test
     @DisplayName("Регистрация с пустыми обязательными полями username и password")
-    public void registrationEmptyCredentials() {
+    public void registrationEmptyCredentialsTest() {
         RegistrationBodyModel registrationData = new RegistrationBodyModel("", "");
         EmptyCredentialsResponseModel emptyCredentialsResponse =
                 api.user.emptyCredentialsUsernameAndPassword(registrationData);

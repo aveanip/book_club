@@ -1,5 +1,6 @@
 package Api;
 
+import io.qameta.allure.Step;
 import models.login.*;
 import models.logout.LogoutBodyModel;
 import models.logout.SuccessfulLogoutResponseModel;
@@ -14,6 +15,7 @@ import static specs.logout.logoutSpec.wrongLogoutResponseSpec;
 
 public class AuthApiClient {
 
+    @Step("Авторизация и получение токена")
     public LoginResponseModel login(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -24,6 +26,7 @@ public class AuthApiClient {
                 .extract().as(LoginResponseModel.class);
     }
 
+    @Step("Попытка авторизации с неверным паролем")
     public WrongCredentialsLoginResponseModel invalidCredentialsPassword(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -34,6 +37,7 @@ public class AuthApiClient {
                 .extract().as(WrongCredentialsLoginResponseModel.class);
     }
 
+    @Step("Попытка авторизации с неверным Username")
     public WrongCredentialsLoginResponseModel wrongCredentialsUsername(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -44,6 +48,7 @@ public class AuthApiClient {
                 .extract().as(WrongCredentialsLoginResponseModel.class);
     }
 
+    @Step("Попытка авторизации с пустым логином и паролем ")
     public EmptyCredentialsLoginResponseModel emptyCredentialsLogin(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -54,6 +59,7 @@ public class AuthApiClient {
                 .extract().as(EmptyCredentialsLoginResponseModel.class);
     }
 
+    @Step("Попытка авторизации с пустым Username")
     public EmptyUsernameLoginResponseModel emptyCredentialsUsername(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -64,6 +70,7 @@ public class AuthApiClient {
                 .extract().as(EmptyUsernameLoginResponseModel.class);
     }
 
+    @Step("Попытка авторизации с пустым Password")
     public EmptyPasswordLoginResponseModel emptyCredentialsPassword(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -74,6 +81,7 @@ public class AuthApiClient {
                 .extract().as(EmptyPasswordLoginResponseModel.class);
     }
 
+    @Step("Попытка авторизации с невалидным логином")
     public EmptyUsernameLoginResponseModel invalidCredentialsUsername(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
@@ -84,33 +92,37 @@ public class AuthApiClient {
                 .extract().as(EmptyUsernameLoginResponseModel.class);
     }
 
+    @Step("Авторизация и получение refresh-токена")
     public String loginAndGetRefreshToken(LoginBodyModel loginData) {
-       return given(baseRequestSpec)
+        return given(baseRequestSpec)
                 .body(loginData)
                 .when()
                 .post("/auth/token/")
                 .then()
                 .spec(successfulLoginRequestSpec)
                 .extract()
-               .path("refresh");
+                .path("refresh");
     }
 
-   public SuccessfulLogoutResponseModel logout (LogoutBodyModel logoutData){
-                return given(baseRequestSpec)
-                        .body(logoutData)
-                        .when()
-                        .post("/auth/logout/")
-                        .then()
-                        .spec(successfulLogoutResponseSpec)
-                        .extract().as(SuccessfulLogoutResponseModel.class);
-            }
-            public WrongRefreshTokenModel wrongRefreshToken (LogoutBodyModel logoutData) {
-                return given(baseRequestSpec)
-                        .body(logoutData)
-                        .when()
-                        .post("/auth/logout/")
-                        .then()
-                        .spec(wrongLogoutResponseSpec)
-                        .extract().as(WrongRefreshTokenModel.class);
-            }
+    @Step("Выход из системы (logout)")
+    public SuccessfulLogoutResponseModel logout(LogoutBodyModel logoutData) {
+        return given(baseRequestSpec)
+                .body(logoutData)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(successfulLogoutResponseSpec)
+                .extract().as(SuccessfulLogoutResponseModel.class);
+    }
+
+    @Step("Попытка выхода из системы с невалидным refresh-токеном")
+    public WrongRefreshTokenModel wrongRefreshToken(LogoutBodyModel logoutData) {
+        return given(baseRequestSpec)
+                .body(logoutData)
+                .when()
+                .post("/auth/logout/")
+                .then()
+                .spec(wrongLogoutResponseSpec)
+                .extract().as(WrongRefreshTokenModel.class);
+    }
 }

@@ -24,4 +24,6 @@ public class TestData {
     public static final String expectedError = "A user with that username already exists.";
     public static final String expectedErrorFieldIsEmpty = "This field may not be blank.";
     public static final String expectedErrorEnterValidEmailAddress = "Enter a valid email address.";
+    public static final String dublicateBookTitle = "Book Club with this Book Title already exists.";
+    public static final String invalidTelegramChat = "Enter a valid URL.";
 }

@@ -1,5 +1,6 @@
 package Api;
 
+import io.qameta.allure.Step;
 import models.registration.*;
 import models.updateUser.PatchInvalidEmailModel;
 import models.updateUser.PutSuccessfullUpDateUserModel;
@@ -14,6 +15,7 @@ import static specs.updateUser.updateUserSpec.*;
 
 public class UserApiClient {
 
+    @Step("Успешная регистрация нового пользователя")
     public RegistrationResponseModel successfulUserRegistration(RegistrationBodyModel registrationData) {
         return given(baseRequestSpec)
                 .body(registrationData)
@@ -24,6 +26,7 @@ public class UserApiClient {
                 .extract().as(RegistrationResponseModel.class);
     }
 
+    @Step("Попытка повторной регистрации уже существующего пользователя")
     public ExistingUserResponseModel secondregistrationResponse(RegistrationBodyModel registrationData) {
         return given(baseRequestSpec)
                 .body(registrationData)
@@ -34,6 +37,7 @@ public class UserApiClient {
                 .extract().as(ExistingUserResponseModel.class);
     }
 
+    @Step("Попытка регистрации без поля username")
     public ExistingUserResponseModel registrationWithoutFieldUsername(RegistrationBodyModel registrationData) {
         return given(baseRequestSpec)
                 .body(registrationData)
@@ -44,6 +48,7 @@ public class UserApiClient {
                 .extract().as(ExistingUserResponseModel.class);
     }
 
+    @Step("Попытка регистрации без поля password")
     public EmptyPasswordResponseModel registrationWithoutFieldPassword(RegistrationBodyModel registrationData) {
         return given(baseRequestSpec)
                 .body(registrationData)
@@ -54,6 +59,7 @@ public class UserApiClient {
                 .extract().as(EmptyPasswordResponseModel.class);
     }
 
+    @Step("Попытка регистрации с пустыми логином и паролем")
     public EmptyCredentialsResponseModel emptyCredentialsUsernameAndPassword(RegistrationBodyModel registrationData) {
         return given(baseRequestSpec)
                 .body(registrationData)
@@ -64,6 +70,7 @@ public class UserApiClient {
                 .extract().as(EmptyCredentialsResponseModel.class);
     }
 
+    @Step("Полное обновление данных пользователя (PUT)")
     public PutSuccessfullUpDateUserModel updateUserDataPut(String accessToken, Integer userId, UpdateBodyModel updateUser) {
         return given(baseRequestSpec)
                 .auth().oauth2(accessToken)
@@ -77,6 +84,7 @@ public class UserApiClient {
                 .as(PutSuccessfullUpDateUserModel.class);
     }
 
+    @Step("Попытка обновления данных с пустым полем username (PUT)")
     public PutWrongUpDateUserModel updateWithEmptyFieldUsername(String accessToken, Integer userId, UpdateBodyModel updateUser) {
         return given(baseRequestSpec)
                 .auth().oauth2(accessToken)
@@ -89,6 +97,7 @@ public class UserApiClient {
                 .extract().as(PutWrongUpDateUserModel.class);
     }
 
+    @Step("Частичное обновление данных пользователя (PATCH)")
     public PutSuccessfullUpDateUserModel updateUserDataPatch(String accessToken, Integer userId, UpdateBodyModel updateUser) {
         return given(baseRequestSpec)
                 .auth().oauth2(accessToken)
@@ -103,6 +112,7 @@ public class UserApiClient {
 
     }
 
+    @Step("Попытка частичного обновления с невалидным email (PATCH)")
     public PatchInvalidEmailModel updateUserDataWithInvalidEmail(String accessToken, Integer userId, UpdateBodyModel updateUser) {
        return given(baseRequestSpec)
                 .auth().oauth2(accessToken)

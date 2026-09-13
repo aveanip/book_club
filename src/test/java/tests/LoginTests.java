@@ -41,8 +41,8 @@ public class LoginTests extends TestBase {
 
     @Test
     @DisplayName("Вход в систему с невалидным username")
-    public void invalidPasswordLogin() {
-        LoginBodyModel loginData = new LoginBodyModel(TestData.wrongUsername, TestData.password);
+    public void invalidPasswordLoginTest() {
+        LoginBodyModel loginData = new LoginBodyModel(wrongUsername, password);
         WrongCredentialsLoginResponseModel wrongCredentialsLoginResponse =
                 api.auth.wrongCredentialsUsername(loginData);
         step("Проверка сообщения об ошибке ", () -> {
@@ -53,7 +53,7 @@ public class LoginTests extends TestBase {
 
     @Test
     @DisplayName("Вход в систему с пустыми полями username и password")
-    public void emptyCredentialsLogin() {
+    public void emptyCredentialsLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel("", "");
         EmptyCredentialsLoginResponseModel emptyCredentialsLoginResponse =
                 api.auth.emptyCredentialsLogin(loginData);
@@ -67,7 +67,7 @@ public class LoginTests extends TestBase {
 
     @Test
     @DisplayName("Вход в систему с пустым username")
-    public void emptyUsernameLogin() {
+    public void emptyUsernameLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel("", TestData.password);
         EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =  api.auth.emptyCredentialsUsername(loginData);
         step("Проверка ошибки пустого поля Username", () -> {
@@ -78,7 +78,7 @@ public class LoginTests extends TestBase {
 
     @Test
     @DisplayName("Вход в систему с пустым password")
-    public void emptyPasswordLogin() {
+    public void emptyPasswordLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(username, "");
         EmptyPasswordLoginResponseModel emptyPasswordLoginResponse =  api.auth.emptyCredentialsPassword(loginData);
         step("Проверка ошибки пустого поля Password", () -> {
@@ -89,7 +89,7 @@ public class LoginTests extends TestBase {
 
     @Test
     @DisplayName("Вход в систему с невалидным username")
-    public void invalidUsernameLogin() {
+    public void invalidUsernameLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(wrongUsername, password);
         EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =
                 api.auth.invalidCredentialsUsername(loginData);
