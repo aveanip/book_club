@@ -26,4 +26,6 @@ public class TestData {
     public static final String expectedErrorEnterValidEmailAddress = "Enter a valid email address.";
     public static final String dublicateBookTitle = "Book Club with this Book Title already exists.";
     public static final String invalidTelegramChat = "Enter a valid URL.";
+    public static final String detailValidError = "This field may not be null.";
+    public static final String notFoundError = "No Club matches the given query";
 }

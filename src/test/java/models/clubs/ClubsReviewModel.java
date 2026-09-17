@@ -7,4 +7,5 @@ public record ClubsReviewModel (Integer id,
                                Integer assessment,
                                Integer readPages,
                                String created,
-                               String modified){}
+                               String modified){
+}

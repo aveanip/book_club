@@ -1,4 +1,5 @@
 package specs.clubs;
+
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -49,11 +50,38 @@ public class ClubsSpec {
             .expectBody(matchesJsonSchemaInClasspath("schemas.clubs/Create_club_emply_fields_error_text_schems.json"))
             .build();
 
+    public static ResponseSpecification createClubEmptyFields = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(400)
+            .build();
+
     public static ResponseSpecification updatingAllFieldsPUT = new ResponseSpecBuilder()
             .log(ALL)
             .expectStatusCode(200)
             .expectBody(matchesJsonSchemaInClasspath("schemas.clubs/Updating_all_fields_of_the_book_club_PUT_schema.json"))
             .build();
+    public static ResponseSpecification updatingAllFieldsNullPUT = new ResponseSpecBuilder()
+        .log(ALL)
+        .expectStatusCode(400)
+        .build();
+
+    public static ResponseSpecification partialModificationOfFieldsPATCH = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath("schemas.clubs/Updating_all_fields_of_the_book_club_PUT_schema.json"))
+            .build();
+
+    public static ResponseSpecification deletedClubResponseSpec = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(204)
+            .build();
+
+    public static ResponseSpecification сheckingTheBookClubByID = new ResponseSpecBuilder()
+            .log(ALL)
+            .expectStatusCode(404)
+            .expectBody("detail", notNullValue())
+            .build();
+
 }
 
 

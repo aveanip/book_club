@@ -20,6 +20,20 @@ public class ClubsApiClient {
                 .as(ClubsResponseModel.class);
     }
 
+    @Step("Проверка пагинации ")
+    public ClubsResponseModel getClubsListWithPagination(String accessToken, int page, int pageSize) {
+        return given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .queryParam("page", page)
+                .queryParam("page_size", pageSize)
+                .when()
+                .get("/clubs/")
+                .then()
+                .spec(successfulClubsListResponseSpec)
+                .extract()
+                .as(ClubsResponseModel.class);
+    }
+
     @Step("Отправка POST-запроса на создание книжного клуба с валидными данными")
     public ClubsModel createClub(String accessToken, ClubBodyModel clubBody){
         return given(clubsRequestSpec)
@@ -84,6 +98,71 @@ public class ClubsApiClient {
                 .spec(updatingAllFieldsPUT)
                 .extract()
                 .as(ClubsModel.class);
+    }
+
+    @Step("Обновление данных клуба через PUT с установкой пустых значений для назавния и ссылки Telegram")
+    public WrongWithEmptyClubDataModel emptyFieldsBookTitleAndTelegramChatLink (String accessToken, Integer id, ClubBodyModel clubBody){
+        return given(clubsRequestSpec)
+                .body(clubBody)
+                .auth().oauth2(accessToken)
+                .when()
+                .pathParam("id", id)
+                .put("/clubs/{id}/")
+                .then()
+                .spec( createClubEmptyFields)
+                .extract()
+                .as(WrongWithEmptyClubDataModel.class);
+    }
+
+    @Step("PUT запрос с null во всех полях клуба должен возвращать ошибку валидации")
+    public WrongWithEmptyClubDataModel updateClubWithAllNullFieldsReturnsValidationError (String accessToken, Integer id, ClubBodyModel clubBody){
+        return given(clubsRequestSpec)
+                .body(clubBody)
+                .auth().oauth2(accessToken)
+                .when()
+                .pathParam("id", id)
+                .put("/clubs/{id}/")
+                .then()
+                .spec(updatingAllFieldsNullPUT)
+                .extract()
+                .as(WrongWithEmptyClubDataModel.class);
+    }
+
+    @Step("PATCH: частичное обновление bookTitle, bookAuthors и publicationYear")
+    public ClubsModel updateClubBookDetails (String accessToken, Integer id, ClubBodyPatchModel clubBodyPatch){
+        return given(clubsRequestSpec)
+                .body(clubBodyPatch)
+                .auth().oauth2(accessToken)
+                .when()
+                .pathParam("id", id)
+                .patch("/clubs/{id}/")
+                .then()
+                .spec(partialModificationOfFieldsPATCH)
+                .extract()
+                .as(ClubsModel.class);
+    }
+    @Step("Удаление клуба по ID")
+    public void deleteClub (String accessToken, Integer id){
+        given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .when()
+                .pathParam("id", id)
+                .delete("/clubs/{id}/")
+                .then()
+                .spec(deletedClubResponseSpec);
+    }
+
+    @Step("Попытка получения данных несуществующего клуба (ожидается 404)")
+    public ErrorClubModel сheckingTheBookClubByID (String accessToken, Integer id) {
+        return given(clubsRequestSpec)
+                .auth().oauth2(accessToken)
+                .when()
+                .pathParam("id", id)
+                .get("/clubs/{id}/")
+                .then()
+                .spec(сheckingTheBookClubByID)
+                .extract()
+                .as(ErrorClubModel.class);
 
     }
 
