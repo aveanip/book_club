@@ -23,7 +23,8 @@ public class AuthApiClient {
                 .post("/auth/token/")
                 .then()
                 .spec(successfulLoginRequestSpec)
-                .extract().as(LoginResponseModel.class);
+                .extract()
+                .as(LoginResponseModel.class);
     }
 
     @Step("Попытка авторизации с неверным паролем")
