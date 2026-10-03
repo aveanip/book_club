@@ -26,9 +26,8 @@ allure {
 dependencies {
     // Rest Assured
     testImplementation 'io.rest-assured:rest-assured:6.0.0'
-    testImplementation 'io.rest-assured:json-schema-validator:6.0.0' // Убрали дубликат и переменную
+    testImplementation 'io.rest-assured:json-schema-validator:6.0.0'
 
-    // Allure (ВСЕ версии теперь одинаковые: 2.29.0)
     testImplementation 'io.qameta.allure:allure-rest-assured:2.29.0'
     testImplementation 'io.qameta.allure:allure-selenide:2.29.0'
 
@@ -36,13 +35,13 @@ dependencies {
     testImplementation 'com.codeborne:selenide:7.16.1'
 
     // JUnit 5
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2' // 5.14.2 еще не существует, стабильная 5.10.2
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
     // Утилиты
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
-    testImplementation 'org.assertj:assertj-core:3.25.3' // Стабильная версия
+    testImplementation 'org.assertj:assertj-core:3.25.3'
 
     // Логирование
     testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.16'

@@ -1,0 +1,6 @@
+8937882400:AAF8mjID6X5oufpNMMy1O1QnkYmtBsr4x28
+
+https://api.telegram.org/bot8937882400:AAF8mjID6X5oufpNMMy1O1QnkYmtBsr4x28/sendMessage
+-5594857910
+
+java "-DconfigFile=notifications/config.json" -jar ./notifications/allure-notifications-4.6.1.jar

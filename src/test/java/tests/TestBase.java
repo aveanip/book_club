@@ -4,12 +4,13 @@ import Api.ApiClient;
 import Api.AuthApiClient;
 import Api.UserApiClient;
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import helpers.Attach;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 
@@ -31,13 +32,29 @@ public class TestBase {
         String selenoidUrl= System.getProperty("selenoidUrl");
         if (selenoidUrl == null || selenoidUrl.isEmpty() || "null".equals(selenoidUrl)) {
             selenoidUrl = "https://user1:1234@selenoid.autotests.cloud/wd/hub";
+
         }
         Configuration.remote = selenoidUrl;
-
     }
+    @BeforeEach
+    public void setUp() {
+        SelenideLogger.addListener("allure", new AllureSelenide()
+                .screenshots(true)
+                .savePageSource(false));
+    }
+
     @AfterEach
     void afterEach() {
         closeWebDriver();
     }
-
+    @AfterEach
+    void addAttachments(){
+        Attach.screenshotAs("Last screenshot");
+        Attach.pageSource();
+//        Attach.attachAsText("Some file", "Some content");
+        Attach.browserConsoleLogs();
+        Attach.addVideo();
+        Attach.getVideoUrl();
+    }
 }
+
