@@ -5,10 +5,13 @@ import Api.AuthApiClient;
 import Api.UserApiClient;
 import com.codeborne.selenide.Configuration;
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
+
+import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 public class TestBase {
 
@@ -19,17 +22,22 @@ public class TestBase {
 
         RestAssured.baseURI = "https://book-club.qa.guru";
         RestAssured.basePath = "/api/v1";
-        Configuration.browser = System.getProperty("browser", "chrome");
-        Configuration.browserVersion = System.getProperty("browserVersion", "148.0");
-        Configuration.browserSize = System.getProperty("browserSize", "1920x1080");
-        Configuration.baseUrl = System.getProperty("baseUrl", "https://book-club.qa.guru");
-        Configuration.remote = System.getProperty("remote");
+        Configuration.baseUrl = System.getProperty("baseUrl");
+        Configuration.browser = System.getProperty("browser");
+        Configuration.browserSize = System.getProperty("browserSize");
+        Configuration.browserVersion = System.getProperty("browserVersion");
+        Configuration.headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
 
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("selenoid:options", Map.<String, Object>of(
-                "enableVNC", true,
-                "enableVideo", true
-        ));
-        Configuration.browserCapabilities = capabilities;
+        String selenoidUrl= System.getProperty("selenoidUrl");
+        if (selenoidUrl == null || selenoidUrl.isEmpty() || "null".equals(selenoidUrl)) {
+            selenoidUrl = "https://user1:1234@selenoid.autotests.cloud/wd/hub";
+        }
+        Configuration.remote = selenoidUrl;
+
     }
+    @AfterEach
+    void afterEach() {
+        closeWebDriver();
+    }
+
 }
