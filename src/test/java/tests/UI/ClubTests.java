@@ -12,16 +12,13 @@ import org.junit.jupiter.api.Test;
 import pages.ClubPage;
 import tests.TestBase;
 import java.util.Locale;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.*;
 
 
 public class ClubTests extends TestBase {
 
 
     Faker faker = new Faker(new Locale("en"));
-    String bookTitle = "GURU-QA " + faker.book().title();
+    String bookTitle = "GURU-QA " + faker.book().title() + " " + faker.number().randomNumber();
     String bookAuthors = faker.book().author();
     int publicationYear = faker.number().numberBetween(1900, 2026);
     String description = faker.lorem().sentence(5);

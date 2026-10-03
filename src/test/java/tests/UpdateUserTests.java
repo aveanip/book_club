@@ -15,6 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,14 +27,14 @@ import static specs.updateUser.updateUserSpec.*;
 import static tests.TestData.*;
 
 public class UpdateUserTests extends TestBase {
-
+    private static final Faker faker = new Faker(new Locale("en"));
     String username1;
     String password1;
 
     @BeforeEach
     public void prepareTestData() {
-        Faker faker = new Faker();
-        username1 = faker.name().username();
+        String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);
+        username1 = faker.name().username() + "_" + uniqueId;;
         password1 = faker.internet().password();
     }
 

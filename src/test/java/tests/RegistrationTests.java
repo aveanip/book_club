@@ -6,6 +6,9 @@ import models.registration.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
+
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,14 +16,14 @@ import static tests.TestData.expectedError;
 import static tests.TestData.expectedErrorFieldIsEmpty;
 
 public class RegistrationTests extends TestBase {
-
+    private static final Faker faker = new Faker(new Locale("en"));
     String username;
     String password;
 
     @BeforeEach
     public void prepareTestData() {
-        Faker faker = new Faker();
-        username = faker.name().firstName();
+        String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);
+        username = faker.name().firstName() + "_" + uniqueId;
         password = faker.name().firstName() + faker.number().randomNumber(6, false);
     }
 

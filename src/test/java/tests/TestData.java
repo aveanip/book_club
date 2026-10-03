@@ -16,7 +16,8 @@ public class TestData {
     public static final String expectedDetailError = "Token is invalid";
     public static final String expectedCodeError = "token_not_valid";
     public static final String invalidRefreshToken = "token";
-    public static final String newUsername = faker.name().username();
+    public static final String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);
+    public static final String newUsername = faker.name().username() + "_" + uniqueId;;
     public static final String newFirstName = faker.name().lastName();
     public static final String newLastName = faker.name().lastName();
     public static final String newEmail = faker.internet().emailAddress();

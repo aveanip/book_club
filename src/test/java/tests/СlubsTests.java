@@ -24,7 +24,7 @@ public class СlubsTests extends TestBase {
 
     private ClubBodyModel generateRandomClub() {
         return new ClubBodyModel(
-                "GURU-QA " + faker.book().title(),
+                "GURU-QA " + faker.book().title() + " " + faker.number().randomNumber(),
                 faker.book().author(),
                 faker.number().numberBetween(1900, 2023),
                 faker.lorem().sentence(5),

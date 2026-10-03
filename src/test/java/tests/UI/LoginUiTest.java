@@ -14,8 +14,9 @@ import static io.qameta.allure.Allure.step;
 public class LoginUiTest extends TestBase {
 
     Faker faker = new Faker(new Locale("en"));
+    String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);
     String password = "12345";
-    String uniqueUsername = faker.name().username();
+    String uniqueUsername = faker.name().username() + "_" + uniqueId;;
     String invalidUsername = faker.name().username();
 
     LoginPage loginPage = new LoginPage();

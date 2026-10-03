@@ -1,12 +1,10 @@
 package tests.UI;
 
 import com.github.javafaker.Faker;
-
 import models.registration.RegistrationBodyModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pages.ClubPage;
-import pages.LoginPage;
 import pages.RegistrationPage;
 import tests.TestBase;
 import java.util.Locale;
@@ -17,7 +15,8 @@ public class RegistrationTests extends TestBase {
     Faker faker = new Faker(new Locale("en"));
     String password = "12345";
     String invalidPassword = "123456";
-    String uniqueUsername = faker.name().username();
+    String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);
+    String uniqueUsername = faker.name().username() + "_" + uniqueId;;
 
     ClubPage clubPage = new ClubPage();
     RegistrationPage registrationPage = new RegistrationPage();
