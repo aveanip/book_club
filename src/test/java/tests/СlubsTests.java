@@ -18,8 +18,7 @@ public class СlubsTests extends TestBase {
 
     @BeforeEach
     public void auth() {
-        Faker faker = new Faker(new Locale("ru"));
-        LoginBodyModel loginData = new LoginBodyModel(username, password);
+        LoginBodyModel loginData = new LoginBodyModel(user, passwordUser);
         accessToken = api.auth.login(loginData).access();
     }
 

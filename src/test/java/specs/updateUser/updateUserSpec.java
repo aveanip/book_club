@@ -7,7 +7,6 @@ import static io.restassured.filter.log.LogDetail.ALL;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static tests.TestData.username;
 
 public class updateUserSpec {
 

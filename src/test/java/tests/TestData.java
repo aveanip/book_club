@@ -7,10 +7,11 @@ public class TestData {
 
     static Faker faker = new Faker();
 
-    public static final String username = "user123";
-    public static final String password = "User12345";
+    public static final String user = "user123";
+    public static final String passwordUser = "User12345";
     public static final String wrongPassword = "User1234";
     public static final String wrongUsername = "User1";
+    public static final Integer invalidReviewId = 0000;
     public static final String invalidDataEmail = "test@ya.";
     public static final String expectedDetailError = "Token is invalid";
     public static final String expectedCodeError = "token_not_valid";

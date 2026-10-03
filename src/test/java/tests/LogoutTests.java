@@ -15,13 +15,15 @@ import static specs.BaseSpec.baseRequestSpec;
 import static specs.login.LoginSpec.successfulLoginRequestSpec;
 import static specs.logout.logoutSpec.successfulLogoutResponseSpec;
 import static specs.logout.logoutSpec.wrongLogoutResponseSpec;
+import static tests.TestData.passwordUser;
+import static tests.TestData.user;
 
 public class LogoutTests extends TestBase {
 
     @Test
     @DisplayName("Успешный logout по валидному refresh токену")
     public void successfulLogoutTest() {
-        LoginBodyModel loginData = new LoginBodyModel(TestData.username, TestData.password);
+        LoginBodyModel loginData = new LoginBodyModel(user, passwordUser);
         String refreshToken =  api.auth.loginAndGetRefreshToken(loginData);
         LogoutBodyModel logoutData = new LogoutBodyModel(refreshToken);
         api.auth.logout(logoutData);
