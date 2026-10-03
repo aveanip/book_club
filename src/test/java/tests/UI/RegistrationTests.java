@@ -10,7 +10,7 @@ import tests.TestBase;
 import java.util.Locale;
 import static io.qameta.allure.Allure.step;
 
-public class RegistrationTests extends TestBase {
+public class RegistrationTests extends TestBaseUI {
 
     Faker faker = new Faker(new Locale("en"));
     String password = "12345";

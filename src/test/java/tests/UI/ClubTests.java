@@ -10,11 +10,10 @@ import models.registration.RegistrationResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pages.ClubPage;
-import tests.TestBase;
 import java.util.Locale;
 
 
-public class ClubTests extends TestBase {
+public class ClubTests extends TestBaseUI {
 
 
     Faker faker = new Faker(new Locale("en"));

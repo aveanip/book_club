@@ -6,12 +6,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pages.ClubPage;
 import pages.LoginPage;
-import tests.TestBase;
+
 import java.util.Locale;
+
 import static io.qameta.allure.Allure.step;
 
 
-public class LoginUiTest extends TestBase {
+public class LoginUiTest extends TestBaseUI {
 
     Faker faker = new Faker(new Locale("en"));
     String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);

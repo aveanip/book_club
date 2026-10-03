@@ -83,14 +83,14 @@ public class AuthApiClient {
     }
 
     @Step("Попытка авторизации с невалидным логином")
-    public EmptyUsernameLoginResponseModel invalidCredentialsUsername(LoginBodyModel loginData) {
+    public WrongCredentialsLoginResponseModel invalidCredentialsUsername(LoginBodyModel loginData) {
         return given(baseRequestSpec)
                 .body(loginData)
                 .when()
                 .post("/auth/token/")
                 .then()
-                .spec(emptyUsernameLoginRequestSpec)
-                .extract().as(EmptyUsernameLoginResponseModel.class);
+                .spec(invalidUsernameLoginRequestSpec)
+                .extract().as(WrongCredentialsLoginResponseModel.class);
     }
 
     @Step("Авторизация и получение refresh-токена")

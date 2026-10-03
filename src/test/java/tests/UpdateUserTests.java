@@ -30,12 +30,20 @@ public class UpdateUserTests extends TestBase {
     private static final Faker faker = new Faker(new Locale("en"));
     String username1;
     String password1;
+    String newUsername;
+    String newFirstName;
+    String newLastName;
+    String newEmail;
 
     @BeforeEach
     public void prepareTestData() {
-        String uniqueId = String.valueOf(System.currentTimeMillis()).substring(7);
+        String uniqueId = String.valueOf(System.currentTimeMillis()).substring(0, 8);
         username1 = faker.name().username() + "_" + uniqueId;;
         password1 = faker.internet().password();
+        newUsername = faker.name().username() + "_" + uniqueId;
+        newFirstName = faker.name().firstName() + "_" + uniqueId;
+        newLastName = faker.name().lastName() + "_" + uniqueId;
+        newEmail = "test_" + uniqueId + "@mail.com";
     }
 
     @Test

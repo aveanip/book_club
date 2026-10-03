@@ -91,11 +91,11 @@ public class LoginTests extends TestBase {
     @DisplayName("Вход в систему с невалидным username")
     public void invalidUsernameLoginTest() {
         LoginBodyModel loginData = new LoginBodyModel(wrongUsername, passwordUser);
-        EmptyUsernameLoginResponseModel emptyUsernameLoginResponse =
+        WrongCredentialsLoginResponseModel wrongCredentialsLoginResponseModel =
                 api.auth.invalidCredentialsUsername(loginData);
         step("Проверка сообщения об ошибке ", () -> {
-            String actualUsernameError = emptyUsernameLoginResponse.username().get(0);
-            assertThat(actualUsernameError).isEqualTo(expectedErrorFieldIsEmpty);
+            String actualUsernameError = wrongCredentialsLoginResponseModel.detail();
+            assertThat(actualUsernameError).isEqualTo(expectedDataError);
         });
     }
 }

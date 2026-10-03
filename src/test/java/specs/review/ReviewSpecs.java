@@ -12,13 +12,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static specs.BaseSpec.baseRequestSpec;
 
 public class ReviewSpecs {
-    public static RequestSpecification reviewRequestSpec = baseRequestSpec;
-
-//    public static final ResponseSpecification reviewsListResponse200Spec = new ResponseSpecBuilder()
-//            .log(ALL)
-//            .expectStatusCode(200)
-//            .build();
-
     public static ResponseSpecification successfulСreationSpecs =  new ResponseSpecBuilder()
             .log(ALL)
             .expectStatusCode(201)
