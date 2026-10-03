@@ -15,7 +15,7 @@ import static tests.TestData.*;
 
 public class СlubsTests extends TestBase {
     private String accessToken;
-
+    String uniqueId = String.valueOf(System.currentTimeMillis()).substring(0, 8);
     @BeforeEach
     public void auth() {
         LoginBodyModel loginData = new LoginBodyModel(user, passwordUser);
@@ -24,7 +24,7 @@ public class СlubsTests extends TestBase {
 
     private ClubBodyModel generateRandomClub() {
         return new ClubBodyModel(
-                "GURU-QA " + faker.book().title() + " " + faker.number().randomNumber(),
+                "GURU-QA " + faker.book().title() + " " + faker.number().randomNumber() + "_" + uniqueId,
                 faker.book().author(),
                 faker.number().numberBetween(1900, 2023),
                 faker.lorem().sentence(5),
@@ -192,7 +192,7 @@ public class СlubsTests extends TestBase {
 
         step("Обновление данных книжного клуба", () -> {
             ClubBodyModel updateClubBody = new ClubBodyModel(
-                    "Обновленное название: " + faker.book().title(),
+                    "Обновленное название: " + faker.book().title() + "_" + uniqueId,
                     "Обновленный автор: " + faker.book().author(),
                     faker.number().numberBetween(2024, 2030),
                     "Обновленное описание: " + faker.lorem().sentence(3),
