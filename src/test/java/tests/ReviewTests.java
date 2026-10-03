@@ -23,12 +23,12 @@ public class ReviewTests extends TestBase {
     private String password;
     private Integer createdClubId;
     Faker faker = new Faker(new Locale("en"));
-    String uniqueTitle = "GURU-QA " + faker.book().title() + " " + faker.number().randomNumber();
+    String uniqueId = String.valueOf(System.currentTimeMillis()).substring(0, 8);
     private ClubBodyModel generateRandomClub() {
         return new ClubBodyModel(
-                uniqueTitle,
+                faker.book().title() + "_" + uniqueId,
                 faker.book().author(),
-                faker.number().numberBetween(1900, 2023),
+                faker.number().numberBetween(1900, 2026),
                 faker.lorem().sentence(5),
                 "https://t.me/test_chat_" + faker.number().randomNumber());
     }
@@ -36,8 +36,8 @@ public class ReviewTests extends TestBase {
     @BeforeEach
     public void auth() {
         //Генерируем данные пользователя
-        username = faker.name().firstName().toLowerCase() + faker.number().randomDigit();
-        password = "TestPass123" + faker.number().randomDigit();
+        username = faker.name().firstName() + "_" + uniqueId;
+        password = "TestPass123" + faker.number() + "_" + uniqueId;
 
         //РЕГИСТРИРУЕМ пользователя перед логином
         RegistrationBodyModel registrationData = new RegistrationBodyModel(username, password);
@@ -61,7 +61,7 @@ public class ReviewTests extends TestBase {
                 createdClubId,
                 "",
                 faker.number().numberBetween(1, 6),
-                faker.number().numberBetween(1, 500)
+                faker.number().numberBetween(1, 10000)
         );
 
         ErrorWhenCreatingAnEmptyReviewModel errorWhenCreatingAnEmptyReview =
@@ -81,7 +81,7 @@ public class ReviewTests extends TestBase {
                 createdClubId,
                 faker.lorem().sentence(),
                 faker.number().numberBetween(1, 6),
-                faker.number().numberBetween(1, 500)
+                faker.number().numberBetween(1, 10000)
         );
 
 
@@ -107,7 +107,7 @@ public class ReviewTests extends TestBase {
                 createdClubId,
                 faker.lorem().sentence(),
                 faker.number().numberBetween(1, 6),
-                faker.number().numberBetween(1, 500)
+                faker.number().numberBetween(1, 10000)
         );
 
         ReviewModel reviewModel =

@@ -24,9 +24,9 @@ public class TestBaseUI {
     @BeforeAll
     public static void setUpUi() {
         Configuration.baseUrl = System.getProperty("baseUrl");
-        Configuration.browser = System.getProperty("BROWSER");
-        Configuration.browserSize = System.getProperty("BROWSER_SIZE");
-        Configuration.browserVersion = System.getProperty("BROWSER_VERSION");
+        Configuration.browser = System.getProperty ("BROWSER", "chrome");
+        Configuration.browserSize = System.getProperty("BROWSER_SIZE","1920x1080");
+        Configuration.browserVersion = System.getProperty("BROWSER_VERSION", "149.0");
         Configuration.headless = Boolean.parseBoolean(System.getProperty("HEADLESS", "false"));
 
         String selenoidUrl= System.getProperty("SELENOID_URL");

@@ -38,7 +38,7 @@ public class UpdateUserTests extends TestBase {
     @BeforeEach
     public void prepareTestData() {
         String uniqueId = String.valueOf(System.currentTimeMillis()).substring(0, 8);
-        username1 = faker.name().username() + "_" + uniqueId;;
+        username1 = faker.name().username() + "_" + uniqueId;
         password1 = faker.internet().password();
         newUsername = faker.name().username() + "_" + uniqueId;
         newFirstName = faker.name().firstName() + "_" + uniqueId;
