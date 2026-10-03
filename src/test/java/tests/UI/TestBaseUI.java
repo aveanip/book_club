@@ -23,26 +23,31 @@ public class TestBaseUI {
 
     @BeforeAll
     public static void setUpUi() {
-        Configuration.baseUrl = System.getProperty("baseUrl");
+        Configuration.baseUrl = System.getProperty("baseUrl", "https://book-club.qa.guru");
         Configuration.browser = System.getProperty ("BROWSER", "chrome");
         Configuration.browserSize = System.getProperty("BROWSER_SIZE","1920x1080");
-        Configuration.browserVersion = System.getProperty("BROWSER_VERSION", "149.0");
+        Configuration.browserVersion = System.getProperty("BROWSER_VERSION", "");
         Configuration.headless = Boolean.parseBoolean(System.getProperty("HEADLESS", "false"));
 
-        String selenoidUrl= System.getProperty("SELENOID_URL");
-        if (selenoidUrl == null || selenoidUrl.isEmpty() || "null".equals(selenoidUrl)) {
-            selenoidUrl = "https://user1:1234@selenoid.autotests.cloud/wd/hub";
-
+        String remote = System.getProperty("REMOTE");
+        if (remote != null && !remote.isEmpty()) {
+            Configuration.remote = remote;
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments(List.of("--disable-dev-shm-usage", "--no-sandbox"));
+            capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+            capabilities.setCapability("selenoid:options", Map.<String, Object>of(
+                    "enableVNC", true,
+                    "enableVideo", true,
+                    "enableLog", true
+            ));
+            Configuration.browserCapabilities = capabilities;
         }
-        Configuration.remote = selenoidUrl;
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments(List.of("--disable-dev-shm-usage", "--no-sandbox"));
-        capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-        capabilities.setCapability("selenoid:options", Map.<String, Object>of(
-                "enableVNC", true,
-                "enableVideo", true
-        ));
+
+        System.out.println("URL: " + Configuration.baseUrl);
+        System.out.println("Browser: " + Configuration.browser);
+        System.out.println("Browser size: " + Configuration.browserSize);
+        System.out.println("Remote: " + Configuration.remote);
     }
 
     @BeforeEach
