@@ -19,19 +19,20 @@ import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 public class TestBaseUI {
 
-
     protected final ApiClient api = new ApiClient();
 
     @BeforeAll
     public static void setUpUi() {
-        RestAssured.baseURI = System.getProperty("api.url", Configuration.baseUrl);
-        RestAssured.basePath = "/api/v1";
+        // Настройки для Selenide (UI)
         Configuration.baseUrl = System.getProperty("baseUrl", "https://book-club.qa.guru");
-        Configuration.browser = System.getProperty ("BROWSER", "chrome");
-        Configuration.browserSize = System.getProperty("BROWSER_SIZE","1920x1080");
-        Configuration.browserVersion = System.getProperty("BROWSER_VERSION", "");
+        Configuration.browser = System.getProperty("BROWSER", "chrome");
+        Configuration.browserSize = System.getProperty("BROWSER_SIZE", "1920x1080");
+        Configuration.browserVersion = System.getProperty("BROWSER_VERSION", ""); // Пустая строка = последняя версия
         Configuration.headless = Boolean.parseBoolean(System.getProperty("HEADLESS", "false"));
 
+
+        RestAssured.baseURI = System.getProperty("api.url", Configuration.baseUrl);
+        RestAssured.basePath = "/api/v1";
         String remote = System.getProperty("REMOTE");
         if (remote != null && !remote.isEmpty()) {
             Configuration.remote = remote;
@@ -51,6 +52,7 @@ public class TestBaseUI {
         System.out.println("Browser: " + Configuration.browser);
         System.out.println("Browser size: " + Configuration.browserSize);
         System.out.println("Remote: " + Configuration.remote);
+        System.out.println("API URL: " + RestAssured.baseURI); // <-- 4. ДОБАВИТЬ для проверки в консоли
     }
 
     @BeforeEach
@@ -61,14 +63,14 @@ public class TestBaseUI {
     }
 
     @AfterEach
-    void afterEach() {
+    void tearDown() {
+        addAttachments();
         closeWebDriver();
     }
-    @AfterEach
-    void addAttachments(){
+
+    void addAttachments() {
         Attach.screenshotAs("Last screenshot");
         Attach.pageSource();
-//        Attach.attachAsText("Some file", "Some content");
         Attach.browserConsoleLogs();
         Attach.addVideo();
         Attach.getVideoUrl();
